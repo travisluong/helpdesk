@@ -1,4 +1,6 @@
 class IncomingMailsController < ApplicationController
+  skip_before_filter :verify_authenticity_token
+
   def create
     Rails.logger.info params
     ticket = Ticket.new(
