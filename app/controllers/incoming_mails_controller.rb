@@ -1,14 +1,15 @@
 class IncomingMailsController < ApplicationController
-  require 'mail'
-  skip_before_filter :verify_authenticity_token
-
   def create
-    message = Mail.new(params[:message])
-    Rails.logger.log Logger::INFO, message.subject #print the subject to the logs
-    Rails.logger.log Logger::INFO, message.body.decoded #print the decoded body to the logs
-
-    # Do some other stuff with the mail message
-
-    render :text => 'success', :status => 200 # a status of 404 would reject the mail
+    Rails.logger.info params
+    ticket = Ticket.new(
+      :from => params[:envelope][:from],
+      :subject => params[:headers]['Subject'],
+      :body => params[:plain]
+    )
+    if ticket.save
+      render :text => 'Success', :status => 200
+    else
+      render :text => message.errors.full_messages, :status => 422, :content_type => Mime::TEXT.to_s
+    end
   end
 end
