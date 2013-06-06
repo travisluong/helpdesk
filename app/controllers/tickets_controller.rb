@@ -28,6 +28,7 @@ class TicketsController < ApplicationController
 
     respond_to do |format|
       if @ticket.save
+        binding.pry
         TicketMailer.send_to_helpdesk(@ticket).deliver
         format.html { redirect_to @ticket, notice: 'Ticket was successfully created.' }
         format.json { render action: 'show', status: :created, location: @ticket }
